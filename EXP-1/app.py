@@ -1,8 +1,11 @@
+import io
+import base64
 from flask import Flask, render_template, request, jsonify
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -27,8 +30,12 @@ def visualize_regression():
     plt.ylabel("Y")
     plt.legend()
     plt.grid(True)
-    image1_path = "static/regression_plot.png"
-    plt.savefig(image1_path)
+    
+    buf1 = io.BytesIO()
+    plt.savefig(buf1, format='png')
+    buf1.seek(0)
+    image1_b64 = base64.b64encode(buf1.getvalue()).decode('utf-8')
+    image1_data_uri = f"data:image/png;base64,{image1_b64}"
     plt.close()
 
     metrics = ["MSE", "MAE", "RMSE", "R2"]
@@ -41,13 +48,17 @@ def visualize_regression():
     plt.xlabel("Metrics")
     plt.ylabel("Value")
     plt.grid(True)
-    image2_path = "static/metrics_plot.png"
-    plt.savefig(image2_path)
+    
+    buf2 = io.BytesIO()
+    plt.savefig(buf2, format='png')
+    buf2.seek(0)
+    image2_b64 = base64.b64encode(buf2.getvalue()).decode('utf-8')
+    image2_data_uri = f"data:image/png;base64,{image2_b64}"
     plt.close()
 
     return jsonify({
-        "image1": image1_path,
-        "image2": image2_path
+        "image1": image1_data_uri,
+        "image2": image2_data_uri
     })
 
 if __name__ == "__main__":
