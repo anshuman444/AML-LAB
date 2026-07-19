@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My MLR Calculator</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 40px; display: flex; flex-direction: column; align-items: center; background-color: #f8fafc; }
+        .container { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); width: 100%; max-width: 600px; text-align: center; }
+        .row-container { display: flex; gap: 15px; margin-bottom: 12px; align-items: center; justify-content: center; }
+        .input-box { padding: 8px; font-size: 14px; border: 1px solid #cbd5e1; border-radius: 6px; }
+        .name-field { width: 160px; }
+        .val-field { width: 300px; }
+        .section-title { margin-top: 25px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; color: #1e293b; font-size: 18px; text-align: center; }
+        button { padding: 8px 16px; cursor: pointer; border-radius: 6px; border: 1px solid #cbd5e1; background-color: #f1f5f9; color: #475569; font-weight: 500;}
+        button:hover { background-color: #e2e8f0; }
+        .btn-primary { background-color: #2563eb; color: white; border: none; padding: 12px 20px; font-weight: bold; width: 100%; font-size: 16px; margin-top: 20px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(37,99,235,0.2);}
+        .btn-primary:hover { background-color: #1d4ed8; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="color: #0f172a; margin-bottom: 5px;">Multiple linear Regression</h2>
+        <p style="color: #64748b; font-size: 14px; margin-top: 0;"></p>
+        
+        <form action="/calculate" method="POST">
+            <h3 class="section-title">Target Variable (y)</h3>
+            <div class="row-container">
+                <input type="text" name="y_name" class="input-box name-field" placeholder="Target Name" required>
+                <input type="text" name="y_values" class="input-box val-field" placeholder="Values" required>
+            </div>
+
+            <h3 class="section-title">Feature Variables (x)</h3>
+            <div id="features-wrapper">
+                <div class="row-container">
+                    <span style="font-weight: 600; width: 30px; color: #475569;">x1:</span>
+                    <input type="text" name="x_name_0" class="input-box name-field" placeholder="Feature Name " required>
+                    <input type="text" name="x_values_0" class="input-box val-field" placeholder="Values" required>
+                </div>
+            </div>
+
+            <p><button type="button" onclick="addFeatureRow()">+ Add Another Feature</button></p>
+            <button type="submit" class="btn-primary">Calculate Model</button>
+        </form>
+    </div>
+
+    <script>
+        let featureCount = 1;
+        function addFeatureRow() {
+            const wrapper = document.getElementById('features-wrapper');
+            const newRow = document.createElement('div');
+            newRow.className = 'row-container';
+            newRow.innerHTML = `
+                <span style="font-weight: 600; width: 30px; color: #475569;">x${featureCount + 1}:</span>
+                <input type="text" name="x_name_${featureCount}" class="input-box name-field" placeholder="Feature Name" required>
+                <input type="text" name="x_values_${featureCount}" class="input-box val-field" placeholder="Values" required>
+            `;
+            wrapper.appendChild(newRow);
+            featureCount++;
+        }
+    </script>
+</body>
+</html>

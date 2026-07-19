@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Results - My MLR Tool</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 40px; display: flex; flex-direction: column; align-items: center; background-color: #f8fafc; text-align: center; color: #1e293b; }
+        .container { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); width: 100%; max-width: 800px; text-align: center; }
+        .equation-box { background-color: #f1f5f9; padding: 20px; font-family: 'Courier New', monospace; font-size: 18px; border-radius: 8px; border: 1px solid #cbd5e1; margin: 20px 0; color: #0f172a; font-weight: bold; }
+        hr { border: 0; height: 1px; background: #e2e8f0; margin: 30px 0; }
+        .input-box { padding: 10px; font-size: 14px; border: 1px solid #cbd5e1; border-radius: 6px; width: 200px; text-align: center; margin-top: 5px; }
+        .btn-primary { background-color: #2563eb; color: white; border: none; padding: 12px 24px; font-weight: bold; font-size: 16px; margin-top: 20px; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(37,99,235,0.2); }
+        .btn-primary:hover { background-color: #1d4ed8; }
+        .btn-secondary { display: inline-block; background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 10px 20px; text-decoration: none; border-radius: 8px; font-weight: 500; margin-top: 20px; transition: 0.2s;}
+        .btn-secondary:hover { background-color: #e2e8f0; }
+        .images-container img { max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; border: 1px solid #e2e8f0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="color: #0f172a;">My Computed Regression Model</h2>
+        
+        <div class="equation-box">
+            {{ equation }}
+        </div>
+        
+        <h3 style="color: #334155;">Intercept & Slopes</h3>
+        <p>Intercept (b0): <b>{{ intercept }}</b></p>
+        {% for name, slope in slopes.items() %}
+            <p>Slope for {{ name }}: <b style="color: #2563eb;">{{ slope }}</b></p>
+        {% endfor %}
+
+        <hr>
+
+        <h3 style="color: #334155;">Make a Prediction</h3>
+        <form action="/predict" method="POST">
+            <!-- Hidden elements pass data to engine securely without complex session tracking -->
+            <input type="hidden" name="y_name" value="{{ y_name }}">
+            <input type="hidden" name="y_input" value="{{ y_input }}">
+            <input type="hidden" name="x_raw_str" value="{{ x_raw_str }}">
+
+            <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-bottom: 20px;">
+            {% for name in x_names %}
+                <div>
+                    <label style="font-weight: 500; color: #475569;">Value for <b>{{ name }}</b> (x{{ loop.index }}):</label><br>
+                    <input type="number" step="any" name="pred_x_{{ loop.index0 }}" class="input-box" required>
+                </div>
+            {% endfor %}
+            </div>
+            <button type="submit" class="btn-primary">Predict {{ y_name }}</button>
+        </form>
+
+        <hr>
+
+        <h3 style="color: #334155;">Visualizations</h3>
+        <div class="images-container">
+            <img src="data:image/png;base64,{{ plot1 }}" alt="Accuracy Plot">
+            <img src="data:image/png;base64,{{ plot2 }}" alt="Metrics Plot">
+        </div>
+
+        <a href="/" class="btn-secondary">Restart Calculator</a>
+    </div>
+</body>
+</html>
